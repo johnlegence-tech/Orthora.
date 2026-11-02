@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b35">
+  <meta name="description" content="Orthora is an interactive spelling and vocabulary learning website.">
+  <title>Orthora | Spelling & Vocabulary</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Orthora home"><span class="brand-mark">O</span><span>orthora</span></a>
+    <div class="header-right"><span class="offline-pill"><span class="status-dot"></span> Ready to learn</span><span id="badge" class="student-badge"></span></div>
+  </header>
+
+  <main>
+    <section id="home" class="screen active" aria-labelledby="welcome-title">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">SPELLING • VOCABULARY • PRACTICE</span>
+          <h1 id="welcome-title">Build your words.<br><span>Grow your confidence.</span></h1>
+          <p>Practice spelling and vocabulary through five interactive word games. Learn at your own pace and see your progress at the end.</p>
+          <div class="setup-panel">
+            <label for="name">Student name <span>(optional)</span></label>
+            <input id="name" type="text" maxlength="40" placeholder="Enter your name" autocomplete="name">
+            <div class="setup-bottom">
+              <label for="count">Questions per game</label>
+              <select id="count"><option value="5">5 questions</option><option value="10" selected>10 questions</option><option value="20">20 questions</option></select>
+            </div>
+            <div class="setup-bottom">
+              <label for="difficulty">Difficulty level</label>
+              <select id="difficulty"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
+            </div>
+            <button class="primary-btn start-btn" onclick="start()"><span>Start learning</span><span aria-hidden="true">→</span></button>
+            <p class="setup-note">No account needed. Your session runs in this browser.</p>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="floating-card card-a"><span>Aa</span><small>Spelling</small></div>
+          <div class="floating-card card-b"><span>✦</span><small>Learn</small></div>
+          <div class="book-illustration"><div class="book-page page-left"><b>A</b><i></i><i></i><i></i></div><div class="book-page page-right"><b>W</b><i></i><i></i><i></i></div></div>
+          <div class="hero-word">Every word counts.</div>
+        </div>
+      </div>
+
+      <section class="dashboard-section" aria-labelledby="dashboard-title">
+        <div class="section-heading"><div><span class="eyebrow">YOUR LEARNING DASHBOARD</span><h2 id="dashboard-title">Your progress at a glance</h2></div><p>Your results are saved on this device only.</p></div>
+        <div class="dashboard-grid">
+          <article class="dashboard-card"><span>Sessions completed</span><strong id="dash-sessions">0</strong></article>
+          <article class="dashboard-card"><span>Questions answered</span><strong id="dash-questions">0</strong></article>
+          <article class="dashboard-card"><span>Average accuracy</span><strong id="dash-accuracy">0%</strong></article>
+        </div>
+      </section>
+      <section class="vocabulary-section" aria-labelledby="vocabulary-title">
+        <div class="section-heading"><div><span class="eyebrow">BUILD YOUR WORD BANK</span><h2 id="vocabulary-title">Vocabulary library</h2></div><p>Search for a word and review its meaning before playing.</p></div>
+        <input id="vocab-search" class="vocab-search" type="search" placeholder="Search words or meanings..." oninput="renderVocabulary()" aria-label="Search vocabulary">
+        <div id="vocab-list" class="vocab-list"></div>
+      </section>
+      <section class="games-section" aria-labelledby="games-title">
+        <div class="section-heading"><div><span class="eyebrow">EXPLORE THE ACTIVITIES</span><h2 id="games-title">Five ways to practice</h2></div><p>Each activity helps you practice a different spelling skill.</p></div>
+        <div class="game-grid">
+          <article class="game-tile"><div class="tile-icon icon-purple">✓</div><div class="tile-number">01</div><h3>3 Wrong, 1 Right</h3><p>Choose the correctly spelled word from four options.</p></article>
+          <article class="game-tile"><div class="tile-icon icon-orange">⌁</div><div class="tile-number">02</div><h3>Hangman</h3><p>Reveal the hidden word one letter at a time.</p></article>
+          <article class="game-tile"><div class="tile-icon icon-blue">⌕</div><div class="tile-number">03</div><h3>Word Hunt</h3><p>Find and connect letters in the letter grid.</p></article>
+          <article class="game-tile"><div class="tile-icon icon-green">_</div><div class="tile-number">04</div><h3>Missing Letters</h3><p>Complete the word by typing its full spelling.</p></article>
+          <article class="game-tile"><div class="tile-icon icon-pink">↝</div><div class="tile-number">05</div><h3>Anagrams</h3><p>Rearrange the mixed-up letters to form a word.</p></article>
+        </div>
+      </section>
+      <footer class="site-footer"><span>ORTHORA</span><span>Learn a word. Keep it for life.</span></footer>
+    </section>
+
+    <section id="game" class="screen game-screen" aria-label="Current word activity">
+      <div class="game-topline"><button class="text-btn" onclick="leaveGame()">← Exit activity</button><span class="session-label">LEARNING SESSION</span></div>
+      <div class="progress-wrap"><div class="progress-meta"><span id="progress-label">Your progress</span><span id="progress-count">1 / 50</span></div><div class="bar" role="progressbar" aria-label="Assessment progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="fill"></i></div></div>
+      <div class="game-meta"><span id="g" class="game-name"></span><span id="n" class="question-count"></span><span id="time" class="timer-pill"></span></div>
+      <div class="card game-card">
+        <div id="gamepic" class="gamepic" aria-hidden="true"></div>
+        <div id="hint" class="hint"></div>
+        <div id="q" aria-live="polite"></div>
+        <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+        <div class="game-actions"><button id="next" class="primary-btn next-btn hide" onclick="next()">Continue <span aria-hidden="true">→</span></button></div>
+      </div>
+      <p class="game-footnote">Take your time, read the hint, and choose your answer carefully.</p>
+    </section>
+
+    <section id="results" class="screen results-screen" aria-labelledby="result-title">
+      <div class="results-banner"><span class="eyebrow">SESSION SUMMARY</span><div class="trophy">✦</div><h1 id="result-title">Nice work!</h1><p>Your learning session is complete.</p></div>
+      <div class="card result-card">
+        <p class="result-caption">YOUR RESULT</p><h2 id="rname"></h2><div id="total" class="big"></div><p id="percent" class="result-message"></p>
+        <div class="result-divider"></div><h3>Game-by-game progress</h3><div id="break" class="grid4"></div>
+        <div class="result-divider"></div><h3>Review your missed words</h3><p class="review-intro">Read each correct spelling and its meaning. Use this list to practice again.</p><div id="review-list" class="review-list"></div>
+        <div class="chart-wrap"><canvas id="chart" width="700" height="300" aria-label="Bar chart showing scores for each game"></canvas></div>
+        <button class="primary-btn restart-btn" onclick="location.reload()">Start a new session <span aria-hidden="true">↻</span></button>
+      </div>
+      <footer class="site-footer"><span>ORTHORA</span><span>Keep practicing. Keep growing.</span></footer>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
